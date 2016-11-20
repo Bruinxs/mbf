@@ -3,12 +3,13 @@ package route
 import (
 	"context"
 	"errors"
-	"github.com/Bruinxs/tu/th"
-	"github.com/Bruinxs/tu/ts"
-	"github.com/Bruinxs/util/ut"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/Bruinxs/tu"
+	"github.com/Bruinxs/tu/th"
+	"github.com/Bruinxs/util/ut"
 )
 
 func TestSessionCtx(t *testing.T) {
@@ -43,7 +44,7 @@ func TestSessionCtx(t *testing.T) {
 	s2 := "s1,s2,s3"
 	i1 := 10
 	f1 := 3.14
-	res, err := tu.GP_M(hts.URL, "", ut.M{"s1": s1, "s2": s2, "i1": i1, "f1": f1}, nil)
+	res, err := th.GP_M(hts.URL, "", ut.M{"s1": s1, "s2": s2, "i1": i1, "f1": f1}, nil)
 	if err != nil {
 		t.Error(err)
 		return
@@ -109,7 +110,7 @@ func TestSessionCtx(t *testing.T) {
 		t.Errorf("_f1(%v) != %v", _f1, f1)
 		return
 	}
-	if !ts.CmpStr_Strict(_s2, []string{"s1", "s2", "s3"}) {
+	if !tu.CmpStr_Strict(_s2, []string{"s1", "s2", "s3"}) {
 		t.Errorf("_s2(%v) != %v", _s2, s2)
 		return
 	}
@@ -130,7 +131,7 @@ func TestSessionCtx(t *testing.T) {
 	}
 
 	rd = &ResultData{Code: 0, Data: "success"}
-	_, err = tu.GP_M(hts.URL, "", nil, ut.M{"s3": "str3"})
+	_, err = th.GP_M(hts.URL, "", nil, ut.M{"s3": "str3"})
 	if err != nil {
 		t.Error(err)
 		return

@@ -5,22 +5,6 @@ import (
 	"regexp"
 )
 
-type Result int
-
-const (
-	R_RETURN = Result(iota)
-)
-
-type Handle interface {
-	ServeCtx(*SessionCtx) Result
-}
-
-type HandleFunc func(*SessionCtx) Result
-
-func (hf HandleFunc) ServeCtx(sc *SessionCtx) Result {
-	return hf(sc)
-}
-
 type muxEntry struct {
 	reg     *regexp.Regexp
 	handler Handle
@@ -51,8 +35,8 @@ func (m *Mux) Hand(pattern string, handle Handle) {
 	m.handle = append(m.handle, &muxEntry{reg, handle})
 }
 
-func (m *Mux) HandFunc(pattern string, handleFunc HandleFunc) {
-	m.Hand(pattern, handleFunc)
+func (m *Mux) HandFunc(pattern string, hf func(*SessionCtx) Result) {
+	m.Hand(pattern, HandleFunc(hf))
 }
 
 func (m *Mux) Filter(pattern string, handle Handle) {
@@ -60,37 +44,40 @@ func (m *Mux) Filter(pattern string, handle Handle) {
 	m.filter = append(m.filter, &muxEntry{reg, handle})
 }
 
-func (m *Mux) FilterFunc(pattern string, handleFunc HandleFunc) {
-	m.Filter(pattern, handleFunc)
+func (m *Mux) FilterFunc(pattern string, hf func(*SessionCtx) Result) {
+	m.Filter(pattern, HandleFunc(hf))
 }
 
 func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	ctx := NewSessionCtx(rw, req)
 	ctx.Mux = m
 
-	if f, ok := matchMuxEntry(req.URL.Path, m.filter); ok {
-		if res := f.ServeCtx(ctx); res == R_RETURN {
+	handle := m.matchMuxEntry(req.URL.Path)
+	for _, h := range handle {
+		if res := h.ServeCtx(ctx); res == R_RETURN {
 			return
 		}
 	}
-
-	handle, _ := matchMuxEntry(req.URL.Path, m.handle)
-	if handle != nil {
-		handle.ServeCtx(ctx)
-	} else {
-		http.NotFound(rw, req)
-	}
 }
 
-func matchMuxEntry(path string, mes []*muxEntry) (Handle, bool) {
-	if len(mes) == 0 {
-		return nil, false
-	}
-
-	for _, m := range mes {
-		if h, ok := m.match(path); ok {
-			return h, true
+func (m *Mux) matchMuxEntry(path string) []Handle {
+	handle := make([]Handle, 0, 2)
+	for _, me := range m.filter {
+		if f, ok := me.match(path); ok {
+			handle = append(handle, f)
 		}
 	}
-	return nil, false
+
+	var H Handle
+	for _, me := range m.handle {
+		if h, ok := me.match(path); ok {
+			H = h
+			break
+		}
+	}
+	if H == nil {
+		H = HandleFunc(NotFound)
+	}
+
+	return append(handle, H)
 }
