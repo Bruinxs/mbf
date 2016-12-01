@@ -4,8 +4,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/Bruinxs/tu"
-	"github.com/Bruinxs/tu/th"
+	"github.com/Bruinxs/ts"
+	"github.com/Bruinxs/ts/th"
 )
 
 func TestMux(t *testing.T) {
@@ -30,7 +30,7 @@ func TestMux(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	if !tu.CmpStr_Strict(list, []string{"handle"}) {
+	if !ts.CmpStr_Strict(list, []string{"handle"}) {
 		t.Errorf("list(%v) ill", list)
 		return
 	}
@@ -50,7 +50,7 @@ func TestMux(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	if !tu.CmpStr_Strict(list, []string{"all", "filter", "handle"}) {
+	if !ts.CmpStr_Strict(list, []string{"all", "filter", "handle"}) {
 		t.Errorf("list(%v) ill", list)
 		return
 	}
@@ -66,7 +66,7 @@ func TestMux(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	if !tu.CmpStr_Strict(list, []string{"all", "filter", "ext"}) {
+	if !ts.CmpStr_Strict(list, []string{"all", "filter", "ext"}) {
 		t.Errorf("list(%v) ill", list)
 		return
 	}

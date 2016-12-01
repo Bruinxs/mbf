@@ -7,8 +7,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/Bruinxs/tu"
-	"github.com/Bruinxs/tu/th"
+	"github.com/Bruinxs/ts"
+	"github.com/Bruinxs/ts/th"
 	"github.com/Bruinxs/util/ut"
 )
 
@@ -110,7 +110,7 @@ func TestSessionCtx(t *testing.T) {
 		t.Errorf("_f1(%v) != %v", _f1, f1)
 		return
 	}
-	if !tu.CmpStr_Strict(_s2, []string{"s1", "s2", "s3"}) {
+	if !ts.CmpStr_Strict(_s2, []string{"s1", "s2", "s3"}) {
 		t.Errorf("_s2(%v) != %v", _s2, s2)
 		return
 	}
