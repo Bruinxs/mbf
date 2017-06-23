@@ -4,8 +4,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/Bruinxs/ts"
-	"github.com/Bruinxs/ts/th"
+	"github.com/bruinxs/ts"
+	"github.com/bruinxs/ts/th"
 )
 
 func TestMux(t *testing.T) {

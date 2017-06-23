@@ -5,8 +5,8 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/Bruinxs/log"
-	"github.com/Bruinxs/util/uv"
+	"github.com/bruinxs/log"
+	"github.com/bruinxs/util/uv"
 )
 
 type ResultData struct {

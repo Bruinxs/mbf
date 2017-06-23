@@ -7,9 +7,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/Bruinxs/ts"
-	"github.com/Bruinxs/ts/th"
-	"github.com/Bruinxs/util/ut"
+	"github.com/bruinxs/ts"
+	"github.com/bruinxs/ts/th"
+	"github.com/bruinxs/util/ut"
 )
 
 func TestSessionCtx(t *testing.T) {
