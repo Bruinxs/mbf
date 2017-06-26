@@ -118,7 +118,7 @@ func TestSessionCtx(t *testing.T) {
 	//2,post
 	call = func(sc *SessionCtx) {
 		var m ut.M
-		err := sc.UnmarshalJson(&m)
+		err := sc.UnmarshalJSON(&m)
 		if err != nil {
 			t.Error(err)
 			return
@@ -130,7 +130,7 @@ func TestSessionCtx(t *testing.T) {
 		}
 	}
 
-	rd = &ResultData{Code: 0, Data: "success"}
+	rd = &ResultData{Code: 0, Data: ut.M{"msg": "success"}}
 	_, err = th.GP_M(hts.URL, "", nil, ut.M{"s3": "str3"})
 	if err != nil {
 		t.Error(err)

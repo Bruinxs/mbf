@@ -20,6 +20,6 @@ func (hf HandleFunc) ServeCtx(sc *SessionCtx) Result {
 }
 
 func NotFound(ctx *SessionCtx) Result {
-	http.NotFound(ctx.Rw, ctx.Req)
+	http.NotFound(ctx.W, ctx.R)
 	return R_RETURN
 }

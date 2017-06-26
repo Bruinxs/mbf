@@ -1,6 +1,7 @@
 package route
 
 import (
+	"fmt"
 	"net/http"
 	"regexp"
 )
@@ -48,15 +49,27 @@ func (m *Mux) FilterFunc(pattern string, hf func(*SessionCtx) Result) {
 	m.Filter(pattern, HandleFunc(hf))
 }
 
-func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
-	ctx := NewSessionCtx(rw, req)
+func (m *Mux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		if err := recover(); err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Header().Set("Content-Type", "text/plain")
+			w.Write([]byte(fmt.Sprintf("\nserver panic err:\n%v", err)))
+		}
+	}()
+
+	ctx := NewSessionCtx(w, r)
 	ctx.Mux = m
 
-	handle := m.matchMuxEntry(req.URL.Path)
+	handle := m.matchMuxEntry(r.URL.Path)
 	for _, h := range handle {
 		if res := h.ServeCtx(ctx); res == R_RETURN {
 			return
 		}
+	}
+
+	if err := ctx.WriteResp(); err != nil {
+		panic(err)
 	}
 }
 

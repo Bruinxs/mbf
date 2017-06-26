@@ -1,4 +1,4 @@
-package route
+package route_test
 
 import (
 	"net/http/httptest"
@@ -6,6 +6,7 @@ import (
 
 	"github.com/bruinxs/ts"
 	"github.com/bruinxs/ts/th"
+	"github.com/bruinxs/util/ut"
 )
 
 func TestMux(t *testing.T) {
@@ -23,7 +24,7 @@ func TestMux(t *testing.T) {
 	//handle
 	mux.HandFunc(".*", func(ctx *SessionCtx) Result {
 		list = append(list, "handle")
-		return ctx.Success("fake")
+		return ctx.Success(ut.M{"msg": "fake"})
 	})
 	_, err = th.GP_M(hs.URL, "test", nil, nil)
 	if err != nil {
