@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 
-	"github.com/Bruinxs/util/ut"
+	"github.com/bruinxs/util/ut"
 	"github.com/bruinxs/util/uv"
 )
 

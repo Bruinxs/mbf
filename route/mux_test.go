@@ -4,6 +4,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	. "github.com/bruinxs/mbf/route"
 	"github.com/bruinxs/ts"
 	"github.com/bruinxs/ts/th"
 	"github.com/bruinxs/util/ut"
@@ -15,7 +16,7 @@ func TestMux(t *testing.T) {
 	hs := httptest.NewServer(mux)
 
 	//no found
-	_, err := th.GP_M(hs.URL, "", nil, nil)
+	_, err := th.Get(hs.URL, "", nil)
 	if err == nil {
 		t.Error(err)
 		return
@@ -26,7 +27,7 @@ func TestMux(t *testing.T) {
 		list = append(list, "handle")
 		return ctx.Success(ut.M{"msg": "fake"})
 	})
-	_, err = th.GP_M(hs.URL, "test", nil, nil)
+	_, err = th.Get(hs.URL, "test", nil)
 	if err != nil {
 		t.Error(err)
 		return
@@ -46,7 +47,7 @@ func TestMux(t *testing.T) {
 		list = append(list, "filter")
 		return R_CONTINUE
 	})
-	_, err = th.GP_M(hs.URL, "filter", nil, nil)
+	_, err = th.Get(hs.URL, "filter", nil)
 	if err != nil {
 		t.Error(err)
 		return
@@ -62,7 +63,7 @@ func TestMux(t *testing.T) {
 		list = append(list, "ext")
 		return R_RETURN
 	})
-	_, err = th.GP_M(hs.URL, "filterext", nil, nil)
+	_, err = th.Get(hs.URL, "filterext", nil)
 	if err != nil {
 		t.Error(err)
 		return

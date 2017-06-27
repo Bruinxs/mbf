@@ -1,4 +1,4 @@
-package route
+package route_test
 
 import (
 	"context"
@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	. "github.com/bruinxs/mbf/route"
 	"github.com/bruinxs/ts"
 	"github.com/bruinxs/ts/th"
 	"github.com/bruinxs/util/ut"
@@ -17,18 +18,27 @@ func TestSessionCtx(t *testing.T) {
 	var rd *ResultData
 	var key, val interface{}
 	var call func(sc *SessionCtx)
-	hts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		sc = NewSessionCtx(w, r.WithContext(context.WithValue(r.Context(), key, val)))
+
+	hander := func(ctx *SessionCtx) Result {
+		sc = ctx
 		if call != nil {
-			call(sc)
+			call(ctx)
 		}
+
 		if rd != nil {
 			if rd.Code == 0 {
-				sc.Success(rd.Data)
+				return ctx.Success(rd.Data)
 			} else {
-				sc.Err(rd.Code, rd.Msg, errors.New(rd.Err))
+				return ctx.Err(rd.Code, rd.Msg, errors.New(rd.Err))
 			}
 		}
+		return R_RETURN
+	}
+	mux := NewMux()
+	mux.HandFunc(".*", hander)
+
+	hts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		mux.ServeHTTP(w, r.WithContext(context.WithValue(r.Context(), key, val)))
 	}))
 
 	//1,get
@@ -44,7 +54,7 @@ func TestSessionCtx(t *testing.T) {
 	s2 := "s1,s2,s3"
 	i1 := 10
 	f1 := 3.14
-	res, err := th.GP_M(hts.URL, "", ut.M{"s1": s1, "s2": s2, "i1": i1, "f1": f1}, nil)
+	res, err := th.Get(hts.URL, "/", ut.M{"s1": s1, "s2": s2, "i1": i1, "f1": f1})
 	if err != nil {
 		t.Error(err)
 		return
@@ -131,7 +141,7 @@ func TestSessionCtx(t *testing.T) {
 	}
 
 	rd = &ResultData{Code: 0, Data: ut.M{"msg": "success"}}
-	_, err = th.GP_M(hts.URL, "", nil, ut.M{"s3": "str3"})
+	_, err = th.PostJson(hts.URL, "", nil, ut.M{"s3": "str3"})
 	if err != nil {
 		t.Error(err)
 		return

@@ -64,7 +64,7 @@ func (m *Mux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	handle := m.matchMuxEntry(r.URL.Path)
 	for _, h := range handle {
 		if res := h.ServeCtx(ctx); res == R_RETURN {
-			return
+			break
 		}
 	}
 
