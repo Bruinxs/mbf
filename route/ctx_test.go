@@ -61,15 +61,15 @@ func TestSessionCtx(t *testing.T) {
 	}
 
 	//resp
-	if g, w := res.IntV("code"), rd.Code; g != w {
+	if g, w := res.Int("code"), rd.Code; g != w {
 		t.Errorf("code(%v) != %v", g, w)
 		return
 	}
-	if g, w := res.StrV("msg"), rd.Msg; g != w {
+	if g, w := res.Str("msg"), rd.Msg; g != w {
 		t.Errorf("msg(%v) != %v", g, w)
 		return
 	}
-	if g, w := res.StrV("err"), rd.Err; g != w {
+	if g, w := res.Str("err"), rd.Err; g != w {
 		t.Errorf("err(%v) != %v", g, w)
 		return
 	}
@@ -134,8 +134,8 @@ func TestSessionCtx(t *testing.T) {
 			return
 		}
 
-		if m.StrV("s3") != "str3" {
-			t.Errorf("s3(%v) != %v", m.StrV("s3"), "str3")
+		if m.Str("s3") != "str3" {
+			t.Errorf("s3(%v) != %v", m.Str("s3"), "str3")
 			return
 		}
 	}
