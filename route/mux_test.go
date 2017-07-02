@@ -72,4 +72,18 @@ func TestMux(t *testing.T) {
 		t.Errorf("list(%v) ill", list)
 		return
 	}
+
+	//hand continue
+	mux.HandFunc("handle", func(ctx *SessionCtx) Result {
+		return ctx.Success(ut.M{"k1": "v1"})
+	})
+	mux.HandFunc("handle", func(ctx *SessionCtx) Result {
+		return ctx.Success(ut.M{"k2": 222})
+	})
+	res, err := th.Get(hs.URL, "handle", nil)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	t.Log("res-> ", res)
 }

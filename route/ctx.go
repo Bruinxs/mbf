@@ -42,8 +42,15 @@ func (sc *SessionCtx) WriteResp() error {
 }
 
 func (sc *SessionCtx) Success(data ut.M) Result {
-	sc.Resp.Code, sc.Resp.Data = 0, data
-	return R_RETURN
+	sc.Resp.Code = 0
+	if sc.Resp.Data == nil {
+		sc.Resp.Data = data
+	} else {
+		for key, val := range data {
+			sc.Resp.Data[key] = val
+		}
+	}
+	return R_CONTINUE
 }
 
 func (sc *SessionCtx) Err(code int, msg string, err error) Result {

@@ -81,16 +81,16 @@ func (m *Mux) matchMuxEntry(path string) []Handle {
 		}
 	}
 
-	var H Handle
+	var haveHandle bool
 	for _, me := range m.handle {
 		if h, ok := me.match(path); ok {
-			H = h
-			break
+			handle = append(handle, h)
+			haveHandle = true
 		}
 	}
-	if H == nil {
-		H = HandleFunc(NotFound)
+	if !haveHandle {
+		handle = append(handle, HandleFunc(NotFound))
 	}
 
-	return append(handle, H)
+	return handle
 }
