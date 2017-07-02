@@ -61,3 +61,7 @@ func (sc *SessionCtx) Err(code int, msg string, err error) Result {
 	sc.Resp.Code, sc.Resp.Msg, sc.Resp.Err = code, msg, errStr
 	return R_RETURN
 }
+
+func (sc *SessionCtx) Redirect(urlStr string) {
+	http.Redirect(sc.W, sc.R, urlStr, http.StatusMovedPermanently)
+}
