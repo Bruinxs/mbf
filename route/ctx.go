@@ -7,6 +7,11 @@ import (
 	"github.com/bruinxs/util/ut"
 )
 
+const (
+	CODE_NOT_HANDLE = -1
+	CODE_SUCCESS    = 0
+)
+
 type ResultData struct {
 	Code int    `json:"code"`
 	Msg  string `json:"msg,omitempty"`
@@ -23,11 +28,14 @@ type SessionCtx struct {
 }
 
 func NewSessionCtx(w http.ResponseWriter, r *http.Request) *SessionCtx {
-	ctx := &SessionCtx{W: w, R: r, Values: make(map[string]interface{}), Resp: &ResultData{}}
+	ctx := &SessionCtx{W: w, R: r, Values: make(map[string]interface{}), Resp: &ResultData{Code: CODE_NOT_HANDLE}}
 	return ctx
 }
 
 func (sc *SessionCtx) WriteResp() error {
+	if sc.Resp.Code == CODE_NOT_HANDLE {
+		return nil
+	}
 	bytes, err := json.Marshal(sc.Resp)
 	if err != nil {
 		return err
@@ -42,7 +50,7 @@ func (sc *SessionCtx) WriteResp() error {
 }
 
 func (sc *SessionCtx) Success(data ut.M) Result {
-	sc.Resp.Code = 0
+	sc.Resp.Code = CODE_SUCCESS
 	if sc.Resp.Data == nil {
 		sc.Resp.Data = data
 	} else {
