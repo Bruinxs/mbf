@@ -85,5 +85,36 @@ func TestMux(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	t.Log("res-> ", res)
+
+	if g := res.StrP("data/k1"); g != "v1" {
+		t.Error("ill ", g)
+		return
+	}
+	if g := res.IntP("data/k2"); g != 222 {
+		t.Error("ill ", g)
+		return
+	}
+
+	//hand return
+	mux.HandFunc("return", func(ctx *SessionCtx) Result {
+		ctx.Success(ut.M{"k1": "v1"})
+		return R_RETURN
+	})
+	mux.HandFunc("return", func(ctx *SessionCtx) Result {
+		return ctx.Success(ut.M{"k2": 222})
+	})
+	res, err = th.Get(hs.URL, "return", nil)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	if g := res.StrP("data/k1"); g != "v1" {
+		t.Error("ill ", g)
+		return
+	}
+	if g := res.IntP("data/k2"); g != 0 {
+		t.Error("ill ", g)
+		return
+	}
 }
