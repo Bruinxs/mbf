@@ -70,6 +70,10 @@ func (sc *SessionCtx) StrVal(key string) string {
 	return ""
 }
 
+func (sc *SessionCtx) ReqVal(key string) string {
+	return sc.R.FormValue(key)
+}
+
 //BVal body json value
 func (sc *SessionCtx) BVal() ut.M {
 	if v := sc.Value("bodyJM"); v != nil {
