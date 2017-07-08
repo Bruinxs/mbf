@@ -19,9 +19,10 @@ func (me *muxEntry) match(tpl string) (Handle, bool) {
 }
 
 type Mux struct {
-	filter []*muxEntry
-	handle []*muxEntry
-	Values map[string]interface{}
+	filter       []*muxEntry
+	handle       []*muxEntry
+	Values       map[string]interface{}
+	RegisterHook func(key, pattern string, handle Handle)
 }
 
 func NewMux() *Mux {
@@ -34,6 +35,9 @@ func NewMux() *Mux {
 func (m *Mux) Hand(pattern string, handle Handle) {
 	reg := regexp.MustCompile(pattern)
 	m.handle = append(m.handle, &muxEntry{reg, handle})
+	if m.RegisterHook != nil {
+		m.RegisterHook("hand", pattern, handle)
+	}
 }
 
 func (m *Mux) HandFunc(pattern string, hf func(*SessionCtx) Result) {
